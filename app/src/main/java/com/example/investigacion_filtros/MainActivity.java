@@ -5,7 +5,11 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
+import android.widget.EditText;
+
 import com.example.investigacion_filtros.adapters.ProductAdapter;
 import com.example.investigacion_filtros.models.Product;
 import com.google.android.gms.tasks.OnCompleteListener;
@@ -23,6 +27,7 @@ public class MainActivity extends AppCompatActivity {
     private RecyclerView rvProducts;
     private ProductAdapter productAdapter;
     private FirebaseFirestore mFirestore;
+    private EditText etFilter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -57,5 +62,23 @@ public class MainActivity extends AppCompatActivity {
         rvProducts = findViewById(R.id.rvProductos);
         rvProducts.setHasFixedSize(true);
         rvProducts.setLayoutManager(new LinearLayoutManager(getApplicationContext()));
+        etFilter = findViewById(R.id.etFilter);
+
+        etFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence charSequence, int i, int i1, int i2) {
+                productAdapter.getFilter().filter(charSequence);
+            }
+
+            @Override
+            public void afterTextChanged(Editable editable) {
+
+            }
+        });
     }
 }

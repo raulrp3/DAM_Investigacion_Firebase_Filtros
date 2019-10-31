@@ -6,21 +6,57 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Filter;
+import android.widget.Filterable;
 import android.widget.TextView;
 
 import com.example.investigacion_filtros.models.Product;
 import com.example.investigacion_filtros.R;
 
+import java.util.ArrayList;
 import java.util.List;
 
-public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct>{
+public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHolderProduct> implements Filterable {
 
     private Context context;
     private List<Product> products;
+    private List<Product> fullProducts;
+
+    private Filter productsFilter = new Filter() {
+        @Override
+        protected FilterResults performFiltering(CharSequence charSequence) {
+            List<Product> filteredlist = new ArrayList<>();
+
+            if (charSequence == null || charSequence.length() == 0){
+                filteredlist.addAll(fullProducts);
+            }else{
+                String filterPattern = charSequence.toString().toLowerCase().trim();
+
+                for (Product item: fullProducts){
+                    if (item.getName().toLowerCase().contains(filterPattern)){
+                        filteredlist.add(item);
+                    }
+                }
+            }
+
+            FilterResults result = new FilterResults();
+            result.values = filteredlist;
+
+            return result;
+        }
+
+        @Override
+        protected void publishResults(CharSequence charSequence, FilterResults filterResults) {
+            products.clear();
+            products.addAll((List) filterResults.values);
+            notifyDataSetChanged();
+        }
+    };
 
     public ProductAdapter(Context context, List<Product> products){
         this.context = context;
         this.products = products;
+        fullProducts = new ArrayList<>(products);
     }
 
     @NonNull
@@ -51,5 +87,10 @@ public class ProductAdapter extends RecyclerView.Adapter<ProductAdapter.ViewHold
 
             tvName = itemView.findViewById(R.id.tvName);
         }
+    }
+
+    @Override
+    public Filter getFilter() {
+        return productsFilter;
     }
 }
