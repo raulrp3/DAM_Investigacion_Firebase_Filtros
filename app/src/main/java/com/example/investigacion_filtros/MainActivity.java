@@ -1,6 +1,7 @@
 package com.example.investigacion_filtros;
 
 import android.support.annotation.NonNull;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -8,9 +9,13 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.MenuInflater;
+import android.view.View;
+import android.widget.Button;
 import android.widget.EditText;
 
 import com.example.investigacion_filtros.adapters.ProductAdapter;
+import com.example.investigacion_filtros.models.Allergen;
 import com.example.investigacion_filtros.models.Product;
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
@@ -28,6 +33,7 @@ public class MainActivity extends AppCompatActivity {
     private ProductAdapter productAdapter;
     private FirebaseFirestore mFirestore;
     private EditText etFilter;
+    private Button btnMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -80,5 +86,31 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+
+        btnMenu = findViewById(R.id.btnMenu);
+        btnMenu.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                final List<Allergen> allergens = new ArrayList<>();
+                mFirestore.collection("allergens").get().addOnCompleteListener(new OnCompleteListener<QuerySnapshot>() {
+                    @Override
+                    public void onComplete(@NonNull Task<QuerySnapshot> task) {
+                        if (task.isSuccessful()){
+                            for (QueryDocumentSnapshot document: task.getResult()){
+                                String allergen = document.getString("name");
+                                allergens.add(new Allergen(allergen));
+                            }
+                            inflateMenuAllergens(allergens);
+                        }
+                    }
+                });
+            }
+        });
+    }
+
+    private void inflateMenuAllergens(List<Allergen> allergens){
+        AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+        builder.setTitle("Alégenos").show();
+        builder.create();
     }
 }
