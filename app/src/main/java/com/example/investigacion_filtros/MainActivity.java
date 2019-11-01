@@ -110,7 +110,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inflateMenuAllergens(List<Allergen> allergens){
-        CharSequence[] cs = new CharSequence[allergens.size()];
+        final ArrayList allergenFilter = new ArrayList();
+        final CharSequence[] cs = new CharSequence[allergens.size()];
+
         for (int i = 0; i < allergens.size(); i++) {
             cs[i] = allergens.get(i).getName();
         }
@@ -120,7 +122,14 @@ public class MainActivity extends AppCompatActivity {
         builder.setMultiChoiceItems(cs, null, new DialogInterface.OnMultiChoiceClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which, boolean isChecked) {
-
+                if (isChecked){
+                    allergenFilter.add(cs[which]);
+                }
+            }
+        }).setPositiveButton("FILTRAR", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                Log.e("FILTER", allergenFilter.toString());
             }
         });
 
