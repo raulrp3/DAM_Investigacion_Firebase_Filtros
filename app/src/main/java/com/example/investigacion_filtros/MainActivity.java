@@ -1,5 +1,6 @@
 package com.example.investigacion_filtros;
 
+import android.content.DialogInterface;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
@@ -109,8 +110,21 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void inflateMenuAllergens(List<Allergen> allergens){
+        CharSequence[] cs = new CharSequence[allergens.size()];
+        for (int i = 0; i < allergens.size(); i++) {
+            cs[i] = allergens.get(i).getName();
+        }
+
         AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
-        builder.setTitle("Alégenos").show();
+        builder.setTitle("Alégenos");
+        builder.setMultiChoiceItems(cs, null, new DialogInterface.OnMultiChoiceClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which, boolean isChecked) {
+
+            }
+        });
+
+        builder.show();
         builder.create();
     }
 }
