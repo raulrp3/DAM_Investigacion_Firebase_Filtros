@@ -54,7 +54,8 @@ public class MainActivity extends AppCompatActivity {
                 if (task.isSuccessful()){
                     for (QueryDocumentSnapshot document: task.getResult()){
                         String name = document.getString("name");
-                        products.add(new Product(name));
+                        String id = document.getId();
+                        products.add(new Product(name, id));
                     }
 
                     productAdapter = new ProductAdapter(MainActivity.this, products);
@@ -99,7 +100,8 @@ public class MainActivity extends AppCompatActivity {
                         if (task.isSuccessful()){
                             for (QueryDocumentSnapshot document: task.getResult()){
                                 String allergen = document.getString("name");
-                                allergens.add(new Allergen(allergen));
+                                String product = document.getString("product");
+                                allergens.add(new Allergen(allergen, product));
                             }
                             inflateMenuAllergens(allergens);
                         }
@@ -109,7 +111,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    private void inflateMenuAllergens(List<Allergen> allergens){
+    private void inflateMenuAllergens(final List<Allergen> allergens){
         final ArrayList allergenFilter = new ArrayList();
         final CharSequence[] cs = new CharSequence[allergens.size()];
 
@@ -129,7 +131,31 @@ public class MainActivity extends AppCompatActivity {
         }).setPositiveButton("FILTRAR", new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialog, int which) {
-                Log.e("FILTER", allergenFilter.toString());
+                final ArrayList productFilter = new ArrayList();
+                final List<Product> result = new ArrayList<>();
+
+                for (int i = 0; i < allergenFilter.size(); i++){
+                    String allergen = allergenFilter.get(i).toString();
+                    for (int j = 0; j < allergens.size(); j++){
+                        String product = allergens.get(j).getProduct();
+                        if (allergen.equals(allergens.get(j).getName())){
+                            productFilter.add(product);
+                        }
+                    }
+                }
+
+                for (int i = 0; i < productFilter.size(); i++){
+                    String product = productFilter.get(i).toString();
+                    for (int j = 0; j < products.size(); j++){
+                        String id = products.get(j).getId();
+                        if (product.equals(id)){
+                            result.add(products.get(j));
+                        }
+                    }
+                }
+
+                productAdapter.setProducts(result);
+                productAdapter.notifyDataSetChanged();
             }
         });
 

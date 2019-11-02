@@ -3,9 +3,11 @@ package com.example.investigacion_filtros.models;
 public class Allergen {
 
     private String name;
+    private String product;
 
-    public Allergen(String name) {
+    public Allergen(String name, String product) {
         this.name = name;
+        this.product = product;
     }
 
     public String getName() {
@@ -14,6 +16,14 @@ public class Allergen {
 
     public void setName(String name) {
         this.name = name;
+    }
+
+    public String getProduct() {
+        return product;
+    }
+
+    public void setProduct(String product) {
+        this.product = product;
     }
 
     @Override
