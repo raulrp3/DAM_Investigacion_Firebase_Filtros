@@ -138,7 +138,7 @@ public class MainActivity extends AppCompatActivity {
                     String allergen = allergenFilter.get(i).toString();
                     for (int j = 0; j < allergens.size(); j++){
                         String product = allergens.get(j).getProduct();
-                        if (allergen.equals(allergens.get(j).getName())){
+                        if (!allergen.equals(allergens.get(j).getName())){
                             productFilter.add(product);
                         }
                     }
